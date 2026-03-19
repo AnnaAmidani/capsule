@@ -8,7 +8,9 @@ CREATE TABLE recipients (
     notified_at       TIMESTAMPTZ,
     delivery_error    TEXT,
     accessed_at       TIMESTAMPTZ,
-    CONSTRAINT unique_recipient_per_capsule UNIQUE (capsule_id, email)
+    created_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT unique_recipient_per_capsule UNIQUE (capsule_id, email),
+    CONSTRAINT token_expiry_required CHECK (access_token IS NULL OR token_expires_at IS NOT NULL)
 );
 
 CREATE INDEX idx_recipients_capsule ON recipients (capsule_id);

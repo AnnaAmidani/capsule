@@ -8,7 +8,8 @@ CREATE TABLE subscriptions (
     tier                     user_tier NOT NULL,
     billing_cycle            billing_cycle NOT NULL,
     status                   subscription_status NOT NULL,
-    current_period_end       TIMESTAMPTZ NOT NULL
+    current_period_end       TIMESTAMPTZ NOT NULL,
+    created_at               TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE UNIQUE INDEX idx_subscriptions_user ON subscriptions (user_id);
+CREATE UNIQUE INDEX idx_subscriptions_user_active ON subscriptions (user_id) WHERE status = 'active';

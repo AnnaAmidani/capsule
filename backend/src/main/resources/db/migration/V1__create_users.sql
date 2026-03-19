@@ -17,3 +17,6 @@ CREATE TABLE users (
 
 CREATE UNIQUE INDEX idx_users_oauth ON users (oauth_provider, oauth_subject)
     WHERE oauth_provider IS NOT NULL;
+
+CREATE UNIQUE INDEX idx_users_stripe_customer ON users (stripe_customer_id)
+    WHERE stripe_customer_id IS NOT NULL;
