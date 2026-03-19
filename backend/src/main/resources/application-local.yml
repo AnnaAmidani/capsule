@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/capsule
+    username: capsule
+    password: capsule
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  kafka:
+    bootstrap-servers: localhost:9092
+
+aws:
+  s3:
+    bucket: capsule-local
+    endpoint: http://localhost:9000
+
+jwt:
+  secret: local-dev-secret-at-least-32-chars-long!!
+
+stripe:
+  secret-key: sk_test_placeholder
+  webhook-secret: whsec_placeholder
