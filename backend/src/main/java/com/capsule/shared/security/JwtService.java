@@ -25,12 +25,13 @@ public class JwtService {
         this.accessTokenMinutes = accessTokenMinutes;
     }
 
-    public String generateAccessToken(UUID userId, String email, String tier) {
+    public String generateAccessToken(UUID userId, String email, String tier, String correlationId) {
         var now = Instant.now();
         return Jwts.builder()
                 .subject(userId.toString())
                 .claim("email", email)
                 .claim("tier", tier)
+                .claim("correlation_id", correlationId)
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plus(accessTokenMinutes, ChronoUnit.MINUTES)))
                 .signWith(key)
@@ -56,6 +57,10 @@ public class JwtService {
 
     public String extractEmail(String token) {
         return parseClaims(token).getPayload().get("email", String.class);
+    }
+
+    public String extractCorrelationId(String token) {
+        return parseClaims(token).getPayload().get("correlation_id", String.class);
     }
 
     private Jws<Claims> parseClaims(String token) {

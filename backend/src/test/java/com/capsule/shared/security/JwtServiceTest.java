@@ -35,26 +35,49 @@ class JwtServiceTest {
     @Test
     void generatedAccessTokenIsValidatable() {
         var userId = UUID.randomUUID();
-        var token = jwtService.generateAccessToken(userId, "test@example.com", "seed");
+        var token = jwtService.generateAccessToken(userId, "test@example.com", "seed", "test-corr-id");
         assertThat(jwtService.isValid(token)).isTrue();
     }
 
     @Test
     void extractsSubjectFromToken() {
         var userId = UUID.randomUUID();
-        var token = jwtService.generateAccessToken(userId, "test@example.com", "seed");
+        var token = jwtService.generateAccessToken(userId, "test@example.com", "seed", "test-corr-id");
         assertThat(jwtService.extractUserId(token)).isEqualTo(userId);
     }
 
     @Test
     void extractsTierFromToken() {
         var userId = UUID.randomUUID();
-        var token = jwtService.generateAccessToken(userId, "test@example.com", "vessel");
+        var token = jwtService.generateAccessToken(userId, "test@example.com", "vessel", "test-corr-id");
         assertThat(jwtService.extractTier(token)).isEqualTo("vessel");
     }
 
     @Test
     void invalidTokenFailsValidation() {
         assertThat(jwtService.isValid("not.a.token")).isFalse();
+    }
+
+    @Test
+    void extractsEmailFromToken() {
+        var userId = UUID.randomUUID();
+        var token = jwtService.generateAccessToken(userId, "user@example.com", "seed", "corr-123");
+        assertThat(jwtService.extractEmail(token)).isEqualTo("user@example.com");
+    }
+
+    @Test
+    void extractsCorrelationIdFromToken() {
+        var userId = UUID.randomUUID();
+        var token = jwtService.generateAccessToken(userId, "user@example.com", "seed", "corr-abc");
+        assertThat(jwtService.extractCorrelationId(token)).isEqualTo("corr-abc");
+    }
+
+    @Test
+    void expiredTokenFailsValidation() {
+        // Create a JwtService with -1 minute expiry → token is already expired at generation time
+        var expiredJwtService = new JwtService("test-secret-must-be-at-least-32-chars!!", -1L);
+        var token = expiredJwtService.generateAccessToken(
+                UUID.randomUUID(), "x@example.com", "seed", "corr-x");
+        assertThat(jwtService.isValid(token)).isFalse();
     }
 }
