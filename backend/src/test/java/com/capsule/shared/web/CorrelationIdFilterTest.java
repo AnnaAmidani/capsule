@@ -18,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     "spring.datasource.username=sa",
     "spring.datasource.password=",
     "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect",
+    "spring.jpa.hibernate.ddl-auto=create-drop",
     "spring.flyway.enabled=false",
     "spring.kafka.bootstrap-servers=localhost:9092",
     "jwt.secret=test-secret-at-least-32-chars-long!!",

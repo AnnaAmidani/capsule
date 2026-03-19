@@ -16,6 +16,7 @@ import static org.assertj.core.api.Assertions.*;
     "spring.datasource.username=sa",
     "spring.datasource.password=",
     "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect",
+    "spring.jpa.hibernate.ddl-auto=create-drop",
     "spring.flyway.enabled=false",
     "spring.quartz.job-store-type=memory",
     "spring.kafka.bootstrap-servers=localhost:9092",
