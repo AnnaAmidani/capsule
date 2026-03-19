@@ -21,3 +21,8 @@ jwt:
 stripe:
   secret-key: sk_test_placeholder
   webhook-secret: whsec_placeholder
+
+management:
+  endpoint:
+    health:
+      show-details: always

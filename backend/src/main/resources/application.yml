@@ -17,6 +17,9 @@ spring:
       port: ${REDIS_PORT:6379}
   kafka:
     bootstrap-servers: ${KAFKA_BROKERS}
+    consumer:
+      group-id: capsule-backend
+      auto-offset-reset: earliest
   quartz:
     job-store-type: jdbc
     jdbc:
@@ -47,7 +50,7 @@ management:
         include: health,metrics,info
   endpoint:
     health:
-      show-details: always
+      show-details: when-authorized
 
 logging:
   structured:

@@ -23,6 +23,7 @@
     <logstash.version>7.4</logstash.version>
     <!-- flyway-database-postgresql requires Flyway 10+; override parent BOM's 9.x -->
     <flyway.version>10.11.0</flyway.version>
+    <springdoc.version>2.4.0</springdoc.version>
   </properties>
 
   <dependencies>
@@ -54,7 +55,7 @@
     <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-actuator</artifactId></dependency>
     <dependency><groupId>net.logstash.logback</groupId><artifactId>logstash-logback-encoder</artifactId><version>${logstash.version}</version></dependency>
     <!-- OpenAPI -->
-    <dependency><groupId>org.springdoc</groupId><artifactId>springdoc-openapi-starter-webmvc-ui</artifactId><version>2.4.0</version></dependency>
+    <dependency><groupId>org.springdoc</groupId><artifactId>springdoc-openapi-starter-webmvc-ui</artifactId><version>${springdoc.version}</version></dependency>
     <!-- Validation -->
     <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-validation</artifactId></dependency>
 
