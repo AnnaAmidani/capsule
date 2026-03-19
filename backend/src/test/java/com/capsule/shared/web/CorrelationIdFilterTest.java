@@ -36,4 +36,11 @@ class CorrelationIdFilterTest {
         mockMvc.perform(get("/actuator/health"))
                .andExpect(header().exists("X-Correlation-Id"));
     }
+
+    @Test
+    void propagatesIncomingCorrelationId() throws Exception {
+        mockMvc.perform(get("/actuator/health")
+                   .header("X-Correlation-Id", "trace-abc-123"))
+               .andExpect(header().string("X-Correlation-Id", "trace-abc-123"));
+    }
 }
