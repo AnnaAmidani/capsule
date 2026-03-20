@@ -101,7 +101,13 @@ public class DeliveryService {
                 .findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token"));
 
-        if (recipient.getTokenExpiresAt() != null && Instant.now().isAfter(recipient.getTokenExpiresAt())) {
+        // Re-verify HMAC to ensure the token was legitimately issued
+        if (recipient.getTokenExpiresAt() == null
+                || !tokenService.verify(token, capsuleId, recipient.getEmail(), recipient.getTokenExpiresAt())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
+        }
+
+        if (Instant.now().isAfter(recipient.getTokenExpiresAt())) {
             throw new ResponseStatusException(HttpStatus.GONE, "Token has expired");
         }
 

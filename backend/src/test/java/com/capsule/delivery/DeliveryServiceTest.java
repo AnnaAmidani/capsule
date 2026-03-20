@@ -89,4 +89,19 @@ class DeliveryServiceTest {
             deliveryService.validateTokenAndMarkAccessed(UUID.randomUUID(), "my-token"))
                 .isInstanceOf(ResponseStatusException.class);
     }
+
+    @Test
+    void validateTokenRejectsTokenWithInvalidHmac() {
+        var recipient = new Recipient();
+        recipient.setAccessToken("stored-token");
+        recipient.setTokenExpiresAt(Instant.now().plus(7, ChronoUnit.DAYS));
+        recipient.setEmail("test@example.com");
+        recipient.setCapsuleId(UUID.randomUUID());
+        when(recipientRepository.findByCapsuleId(any())).thenReturn(List.of(recipient));
+        when(tokenService.verify(any(), any(), any(), any())).thenReturn(false);
+
+        assertThatThrownBy(() ->
+            deliveryService.validateTokenAndMarkAccessed(UUID.randomUUID(), "stored-token"))
+                .isInstanceOf(ResponseStatusException.class);
+    }
 }
