@@ -17,7 +17,8 @@ import java.util.UUID;
 public class UserService {
 
     private static final Duration REFRESH_TTL = Duration.ofDays(30);
-    private static final String REFRESH_KEY_PREFIX = "refresh:";
+    private static final String REFRESH_TOKEN_KEY = "refresh:token:";
+    private static final String REFRESH_USER_KEY = "refresh:user:";
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -52,27 +53,34 @@ public class UserService {
     }
 
     public TokenResponse refresh(String refreshToken) {
-        var key = REFRESH_KEY_PREFIX + refreshToken;
-        var userIdStr = redis.opsForValue().get(key);
+        var tokenKey = REFRESH_TOKEN_KEY + refreshToken;
+        var userIdStr = redis.opsForValue().get(tokenKey);
         if (userIdStr == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired refresh token");
         }
-        redis.delete(key);
-        var user = userRepository.findById(UUID.fromString(userIdStr))
+        // Delete old token-keyed entry (rotation — old token is consumed)
+        redis.delete(tokenKey);
+        var userId = UUID.fromString(userIdStr);
+        var user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
         return issueTokens(user);
     }
 
     public void logout(String refreshToken) {
-        redis.delete(REFRESH_KEY_PREFIX + refreshToken);
+        var tokenKey = REFRESH_TOKEN_KEY + refreshToken;
+        var userIdStr = redis.opsForValue().get(tokenKey);
+        redis.delete(tokenKey);
+        if (userIdStr != null) {
+            redis.delete(REFRESH_USER_KEY + userIdStr);
+        }
     }
 
     public void invalidateRefreshTokenForUser(UUID userId) {
-        var keys = redis.keys(REFRESH_KEY_PREFIX + "*");
-        if (keys != null) {
-            keys.stream()
-                .filter(k -> userId.toString().equals(redis.opsForValue().get(k)))
-                .forEach(redis::delete);
+        var userKey = REFRESH_USER_KEY + userId.toString();
+        var existingToken = redis.opsForValue().get(userKey);
+        redis.delete(userKey);
+        if (existingToken != null) {
+            redis.delete(REFRESH_TOKEN_KEY + existingToken);
         }
     }
 
@@ -92,7 +100,9 @@ public class UserService {
         var accessToken = jwtService.generateAccessToken(
                 user.getId(), user.getEmail(), user.getTier().name(), correlationId);
         var refreshToken = UUID.randomUUID().toString();
-        redis.opsForValue().set(REFRESH_KEY_PREFIX + refreshToken, user.getId().toString(), REFRESH_TTL);
+        // Dual mapping: by token (for validation) and by userId (for invalidation)
+        redis.opsForValue().set(REFRESH_TOKEN_KEY + refreshToken, user.getId().toString(), REFRESH_TTL);
+        redis.opsForValue().set(REFRESH_USER_KEY + user.getId().toString(), refreshToken, REFRESH_TTL);
         return new TokenResponse(accessToken, refreshToken);
     }
 

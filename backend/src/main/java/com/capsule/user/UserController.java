@@ -1,6 +1,7 @@
 package com.capsule.user;
 
 import com.capsule.user.dto.*;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class UserController {
     }
 
     @PatchMapping("/me")
-    public ResponseEntity<UserResponse> updateMe(@RequestBody UpdateUserRequest req,
+    public ResponseEntity<UserResponse> updateMe(@Valid @RequestBody UpdateUserRequest req,
                                                   Authentication auth) {
         var userId = (UUID) auth.getPrincipal();
         var user = userService.updateEmail(userId, req.email());
