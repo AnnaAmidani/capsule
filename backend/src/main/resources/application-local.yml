@@ -17,6 +17,12 @@ spring:
             client-id: ${GOOGLE_CLIENT_ID:placeholder}
             client-secret: ${GOOGLE_CLIENT_SECRET:placeholder}
             scope: openid,email,profile
+          # Apple Sign In requires private_key_jwt client auth — full setup deferred to IaC spec
+          # apple:
+          #   client-id: ${APPLE_CLIENT_ID:placeholder}
+          #   client-secret: ${APPLE_CLIENT_SECRET:placeholder}  # JWT signed with private key
+          #   client-authentication-method: private_key_jwt
+          #   scope: openid,email,name
 
 aws:
   s3:
