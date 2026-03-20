@@ -3,8 +3,8 @@ package com.capsule.shared.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,12 +19,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
-    private final ClientRegistrationRepository clientRegistrationRepository;
+    private final OAuth2SuccessHandler oauth2SuccessHandler;
 
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter,
-                          @Autowired(required = false) ClientRegistrationRepository clientRegistrationRepository) {
+    @Autowired(required = false)
+    private ClientRegistrationRepository clientRegistrationRepository;
+
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter, @Lazy OAuth2SuccessHandler oauth2SuccessHandler) {
         this.jwtAuthFilter = jwtAuthFilter;
-        this.clientRegistrationRepository = clientRegistrationRepository;
+        this.oauth2SuccessHandler = oauth2SuccessHandler;
     }
 
     @Bean
@@ -45,7 +47,7 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         if (clientRegistrationRepository != null) {
-            http.oauth2Login(Customizer.withDefaults());
+            http.oauth2Login(oauth -> oauth.successHandler(oauth2SuccessHandler));
         }
 
         return http.build();
