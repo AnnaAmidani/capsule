@@ -1,6 +1,7 @@
 package com.capsule.capsule;
 
 import com.capsule.capsule.dto.*;
+import com.capsule.delivery.DeliveryService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.*;
 import org.springframework.http.*;
@@ -15,9 +16,11 @@ import java.util.UUID;
 public class CapsuleController {
 
     private final CapsuleService capsuleService;
+    private final DeliveryService deliveryService;
 
-    public CapsuleController(CapsuleService capsuleService) {
+    public CapsuleController(CapsuleService capsuleService, DeliveryService deliveryService) {
         this.capsuleService = capsuleService;
+        this.deliveryService = deliveryService;
     }
 
     @PostMapping
@@ -44,9 +47,7 @@ public class CapsuleController {
                                                 Authentication auth) {
         Capsule capsule;
         if (token != null) {
-            // TODO(Task 9): validate HMAC token via TokenService before granting access.
-            // Token must be verified (signature, expiry, single-use via accessed_at) before
-            // returning capsule contents. Until Task 9 is wired, this path is not secure.
+            deliveryService.validateTokenAndMarkAccessed(id, token);
             capsule = capsuleService.getAccessible(id);
         } else if (auth != null) {
             capsule = capsuleService.getForOwner(id, userId(auth));
