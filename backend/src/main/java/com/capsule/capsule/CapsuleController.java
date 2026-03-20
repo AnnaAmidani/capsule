@@ -6,6 +6,7 @@ import org.springframework.data.domain.*;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -43,9 +44,14 @@ public class CapsuleController {
                                                 Authentication auth) {
         Capsule capsule;
         if (token != null) {
-            capsule = capsuleService.getAccessible(id); // token validated in delivery module
-        } else {
+            // TODO(Task 9): validate HMAC token via TokenService before granting access.
+            // Token must be verified (signature, expiry, single-use via accessed_at) before
+            // returning capsule contents. Until Task 9 is wired, this path is not secure.
+            capsule = capsuleService.getAccessible(id);
+        } else if (auth != null) {
             capsule = capsuleService.getForOwner(id, userId(auth));
+        } else {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authentication required");
         }
         return ResponseEntity.ok(CapsuleResponse.from(capsule));
     }
