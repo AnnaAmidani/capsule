@@ -327,3 +327,4 @@ Per AGENTS.md:
 | Content moderation workflow | Required before public launch | Flagging + human review — legal exposure |
 | Kafka consumer lag SLA | Deferred | No formal delivery latency SLA defined for MVP; add operational alerting post-launch |
 | accessed_at multi-visit policy | Deferred | Current design: single-use token (first view only). Authenticated users with matching email can re-access via JWT. Revisit if UX feedback requires token re-use. |
+
