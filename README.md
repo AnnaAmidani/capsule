@@ -6,7 +6,7 @@ A personal space for memories, sealed and delivered when the time is right.
 
 ## What it is
 
-Capsule is a web platform for creating time capsules. You gather what matters — words, images, links, keepsakes — lock it away, and choose when it arrives. It might be a message to your children, a note to a future version of yourself, or a shared memory from a wedding that opens on the couple's tenth anniversary.
+Capsule is a web platform for creating time capsules. You gather what matters - words, images, links, keepsakes - lock it away, and choose when it arrives. It might be a message to your children, a note to a future version of yourself, or a shared memory from a wedding that opens on the couple's tenth anniversary.
 
 The two states of a capsule are the heart of the product: **sealed** (the contents are locked and inaccessible, even to you) and **opened** (delivered to your recipients at the moment you chose). The architecture enforces this, not just the interface.
 
@@ -18,7 +18,7 @@ The two states of a capsule are the heart of the product: **sealed** (the conten
 
 **Celebration.** A love letter that opens on a future anniversary. A birthday message from someone who won't be there. A graduation note sealed when someone was still in their first year.
 
-**Community memory.** A group captures a shared moment — a trip, a wedding, a milestone — and seals it to be opened years later, together.
+**Community memory.** A group captures a shared moment - a trip, a wedding, a milestone - and seals it to be opened years later, together.
 
 ---
 
