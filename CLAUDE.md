@@ -1,4 +1,4 @@
-@~/.claude/AGENTS.md
+@AGENTS.md
 
 # CLAUDE.md
 
